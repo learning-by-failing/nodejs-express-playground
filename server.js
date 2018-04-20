@@ -41,6 +41,14 @@ app.get('/about', (req, res)=>{
   });
 });
 
+app.get('/api', (req, res)=>{
+  res.status(200).send({
+    api: true,
+    version: 1.0,
+    author: "Maurizio Brioschi"
+  });
+});
+
 app.listen(3000, ()=> {
   console.log('Server is up on port 3000');
 });
