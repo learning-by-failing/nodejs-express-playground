@@ -6,17 +6,22 @@ mongoose.connect('mongodb://localhost/todo');
 const Todo = mongoose.model('todo', {
   text: {
     type: String,
+    require: true,
+    minlegth: 1,
+    trim: true
   },
   completed: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   completedAt: {
-    type: Number
+    type: Number,
+    default: null,
   }
 });
 
 let newTodo = new Todo({
-  text: "Snowboarding",
+  text: "  Snowboarding   ",
   completed: false
 });
 
