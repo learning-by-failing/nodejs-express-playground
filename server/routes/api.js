@@ -10,7 +10,7 @@ module.exports = (app)  => {
     });
   });
 
-  app.post('/api/todo',(req, res)=>{
+  app.post('/api/todo',(req, res) => {
     let newTodo = new Todo({
       text: req.body.text,
       completed: req.body.completed,
