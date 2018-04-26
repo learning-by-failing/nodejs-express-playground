@@ -1,13 +1,13 @@
 const express = require('express');
 const hbs = require('hbs');
 const fs = require('fs');
-const {orm} = require('./db/mongoose/mongoose');
-const {Todo} = require('./db/mongoose/models/Todo')
 var app = express();
+const bodyParser = require('body-parser');
 
 hbs.registerPartials(__dirname + '/../views/partials')
 app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/../public'));
+app.use(bodyParser.json());
 
 //middleware to log requests
 app.use((req, res, next)=>{
@@ -42,26 +42,7 @@ app.get('/about', (req, res)=>{
   });
 });
 
-app.get('/api', (req, res)=>{
-  res.status(200).send({
-    api: true,
-    version: 1.0,
-    author: "Maurizio Brioschi"
-  });
-});
-
-app.get('/insertTodo',(request, response)=>{
-  let newTodo = new Todo({
-    text: "  Mauri   ",
-    completed: false
-  });
-
-  newTodo.save().then((doc)=>{
-    response.status(200).send(doc);
-  }, (e)=>{
-    console.log('Unable to save todo');
-  });
-});
+require('./routes/api')(app);
 
 app.listen(3000, ()=> {
   console.log('Server is up on port 3000');
