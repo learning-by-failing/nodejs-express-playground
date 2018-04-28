@@ -1,7 +1,9 @@
 const {ObjectID} = require('mongodb');
+const _ = require('underscore');
 
 const {mongoose} = require('../db/mongoose/mongoose');
 const {Todo} = require('../db/mongoose/models/Todo');
+const {User} = require('../db/mongoose/models/User');
 
 module.exports = (app)  => {
   app.get('/api', (req, res)=>{
@@ -38,5 +40,14 @@ module.exports = (app)  => {
     }, (e)=>{
       res.status(400).send(e);
     });
+  });
+
+  app.post('/api/user', (req, res)  => {
+    let body = _.pick(req.body, ["email", "password"]);
+    let user = new User(body);
+
+    user.save().then((user)=>{
+      res.status(201).send(user);
+    }, (e)=> res.status(400).send(e));
   });
 }

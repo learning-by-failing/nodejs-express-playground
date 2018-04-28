@@ -4,6 +4,7 @@ const {ObjectID} = require('mongodb');
 
 const app = require('./../server/server').app;
 const {Todo} = require('./../server/db/mongoose/models/Todo');
+const {User} = require('./../server/db/mongoose/models/User');
 
 const todos = [{
   _id: new ObjectID(),
@@ -16,7 +17,9 @@ const todos = [{
 beforeEach((done) => {
   Todo.remove({}).then(() => {
     return Todo.insertMany(todos);
-  }).then(() => done());
+  }).then(() => {
+    return User.remove({});
+  }).then(()=>done());
 });
 
 describe('routes', ()=> {
@@ -119,6 +122,27 @@ describe('routes', ()=> {
               expect(todos.length).toBe(2);
               done();
             }).catch((e)=>done(e));
+          });
+      });
+
+      it('/api/user', (done)=>{
+        request(app)
+          .post('/api/user')
+          .send({email: "mauri@ciao.it", password: "123456"})
+          .expect(201)
+          .expect((res)=>{
+            expect(res.body).toInclude({
+              email: "mauri@ciao.it",
+              password: "123456"
+            }).toIncludeKey("tokens");
+          }).end((err, res) => {
+            if(err){
+              return done(err);
+            }
+            User.findOne({email: "mauri@ciao.it"}).then((user)=>{
+              expect(user.password).toBe("123456");
+              done();
+            }).catch((e)=> done(e));
           });
       });
     });
