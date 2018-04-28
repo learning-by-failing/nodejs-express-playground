@@ -1,7 +1,11 @@
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 const {Todo} = require('./models/Todo');
 
 //mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/todo');
+if(process.env.ENV!=='production') {
+  mongoose.connect(`${process.env.DB_HOST}/${process.env.DB_NAME}_${process.env.ENV}`);
+}
 
 module.exports = {mongoose};

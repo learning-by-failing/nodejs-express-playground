@@ -1,6 +1,7 @@
+require('dotenv').config();
 const {MongoClient,ObjectID} = require('mongodb');
 
-MongoClient.connect('mongodb://localhost:27017/todo', (err, db) => {
+MongoClient.connect(`${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, (err, db) => {
   if(err){
     return console.log('Unable to connect to MongoDb server');
   }
