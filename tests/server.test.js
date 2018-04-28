@@ -5,6 +5,7 @@ const {ObjectID} = require('mongodb');
 const app = require('./../server/server').app;
 const {Todo} = require('./../server/db/mongoose/models/Todo');
 const {User} = require('./../server/db/mongoose/models/User');
+const {SHA256} = require('crypto-js');
 
 const todos = [{
   _id: new ObjectID(),
@@ -132,15 +133,15 @@ describe('routes', ()=> {
           .expect(201)
           .expect((res)=>{
             expect(res.body).toInclude({
-              email: "mauri@ciao.it",
-              password: "123456"
-            }).toIncludeKey("tokens");
+              email: "mauri@ciao.it"
+            });
+            expect(res.header).toIncludeKey('x-auth').toNotBe(null);
           }).end((err, res) => {
             if(err){
               return done(err);
             }
             User.findOne({email: "mauri@ciao.it"}).then((user)=>{
-              expect(user.password).toBe("123456");
+              expect(user.password).toBe(SHA256("123456").toString());
               done();
             }).catch((e)=> done(e));
           });

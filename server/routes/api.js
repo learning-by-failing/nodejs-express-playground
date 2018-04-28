@@ -1,5 +1,5 @@
 const {ObjectID} = require('mongodb');
-const _ = require('underscore');
+const _ = require('lodash');
 
 const {mongoose} = require('../db/mongoose/mongoose');
 const {Todo} = require('../db/mongoose/models/Todo');
@@ -46,8 +46,10 @@ module.exports = (app)  => {
     let body = _.pick(req.body, ["email", "password"]);
     let user = new User(body);
 
-    user.save().then((user)=>{
-      res.status(201).send(user);
+    user.cryptPassword().then(()=>{
+      return user.generateAuthToken();
+    }).then((token)=>{
+      return res.header('x-auth', token).status(201).send(user.toJson());
     }, (e)=> res.status(400).send(e));
   });
 }
