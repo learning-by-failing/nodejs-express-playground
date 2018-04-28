@@ -43,9 +43,11 @@ app.get('/about', (req, res)=>{
 });
 
 require('./routes/api')(app);
+if(!module.parent){
+  app.listen(3000, ()=> {
+    console.log('Server is up on port 3000');
+  });
+}
 
-app.listen(3000, ()=> {
-  console.log('Server is up on port 3000');
-});
 
 module.exports.app = app;
