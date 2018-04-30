@@ -39,6 +39,25 @@ const UserSchema = new mongoose.Schema({
   ]
 });
 
+UserSchema.statics.findByToken = function(token)  {
+  let user = this;
+  let decoded;
+
+  try{
+    decoded = jwt.verify(token, process.env.SECRET);
+  }catch(e){
+    return new Promise((resolve, reject) => {
+       reject(e);
+    });
+  }
+
+  return user.findOne({
+    "_id": decoded._id,
+    "tokens.token": token,
+    "tokens.access": 'auth'
+  });
+}
+
 UserSchema.methods.cryptPassword = function() {
   let user = this;
 

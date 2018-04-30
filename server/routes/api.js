@@ -4,6 +4,7 @@ const _ = require('lodash');
 const {mongoose} = require('../db/mongoose/mongoose');
 const {Todo} = require('../db/mongoose/models/Todo');
 const {User} = require('../db/mongoose/models/User');
+const {authenticate} = require('./../authenticate/authenticate');
 
 module.exports = (app)  => {
   app.get('/api', (req, res)=>{
@@ -27,6 +28,10 @@ module.exports = (app)  => {
     }).catch((e) => {
       return res.status(400).send(e);
     });
+  });
+
+  app.get('/api/user/me', authenticate, (req, res) => {
+      return res.status(200).send(req.user);
   });
 
   app.post('/api/todo',(req, res) => {
