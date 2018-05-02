@@ -31,7 +31,7 @@ module.exports = (app)  => {
   });
 
   app.get('/api/user/me', authenticate, (req, res) => {
-      return res.status(200).send(req.user);
+      return  res.status(200).send(req.user);
   });
 
   app.post('/api/todo',(req, res) => {

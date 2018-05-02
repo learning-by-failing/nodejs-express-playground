@@ -1,27 +1,15 @@
 const request = require('supertest');
 const expect = require('expect');
 const {ObjectID} = require('mongodb');
+const {SHA256} = require('crypto-js');
 
 const app = require('./../server/server').app;
 const {Todo} = require('./../server/db/mongoose/models/Todo');
 const {User} = require('./../server/db/mongoose/models/User');
-const {SHA256} = require('crypto-js');
+const {todos,users,populateTodos,populateUsers} = require('./seeds/seeds');
 
-const todos = [{
-  _id: new ObjectID(),
-  text: 'First test todo'
-}, {
-  _id: new ObjectID(),
-  text: 'Second test todo'
-}];
-
-beforeEach((done) => {
-  Todo.remove({}).then(() => {
-    return Todo.insertMany(todos);
-  }).then(() => {
-    return User.remove({});
-  }).then(()=>done());
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 describe('routes', ()=> {
   describe('pages', () => {
@@ -84,6 +72,16 @@ describe('routes', ()=> {
             .expect(404)
             .end(done);
         });
+
+        it('/api/user/me with valid token', (done) => {
+          User.findById(users[0]._id).then((user)=>{
+            request(app)
+              .get('/api/user/me')
+              .set('x-auth', user.tokens[0].token)
+              .expect(200)
+              .end(done);
+          }).catch((e)=> done(e));;
+        });
     });
 
     describe('POST', () => {
@@ -142,6 +140,10 @@ describe('routes', ()=> {
             }
             User.findOne({email: "mauri@ciao.it"}).then((user)=>{
               expect(user.password).toBe(SHA256("123456").toString());
+              /*expect(user.tokens).toIncludeKey('token');
+              expect(user.tokens.token).toInclude({
+                access: "auth"
+              });*/
               done();
             }).catch((e)=> done(e));
           });
