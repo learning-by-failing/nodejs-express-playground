@@ -51,10 +51,20 @@ module.exports = (app)  => {
     let body = _.pick(req.body, ["email", "password"]);
     let user = new User(body);
 
-    user.cryptPassword().then(()=>{
+    user.cryptPassword().then((user)=>{
       return user.generateAuthToken();
     }).then((token)=>{
       return res.header('x-auth', token).status(201).send(user.toJson());
     }, (e)=> res.status(400).send(e));
+  });
+
+  app.post('/api/user/login', (req, res)  => {
+    var body = _.pick(req.body, ["email", "password"]);
+
+    User.findByCredentials(body.email, body.password).then((user)=>{
+      return user.generateAuthToken().then((token)=>{
+        return res.header('x-auth', token).status(201).send(user.toJson());
+      });
+    }).catch((e) => res.status(400).send(e));
   });
 }
