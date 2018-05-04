@@ -180,5 +180,22 @@ describe('routes', ()=> {
           });
       });
     });
+    describe('DELETE', ()=>{
+      it('/api/user/token with valid token', (done)=>{
+        User.findById(users[0]._id).then((user)=>{
+          request(app)
+          .delete('/api/user/token')
+          .set('x-auth', user.tokens[0].token)
+          .expect(200)
+          .end(done);
+        }).catch((e)=>done(e));
+      });
+      it('/api/user/token with invalid token', (done)=>{
+        request(app)
+        .delete('/api/user/token')
+        .expect(401)
+        .end(done);
+      });
+    });
   });
 });
