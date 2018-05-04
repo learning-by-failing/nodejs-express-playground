@@ -67,4 +67,11 @@ module.exports = (app)  => {
       });
     }).catch((e) => res.status(400).send(e));
   });
+
+  app.delete('/api/user/token', authenticate, (req, res)=>{
+    let user = req.user;
+    user.removeToken(req.token).then(()=>{
+      return res.status(200).send();
+    }, (e)=>res.status(400).send());
+  });
 }
