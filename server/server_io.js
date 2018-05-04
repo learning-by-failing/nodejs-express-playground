@@ -16,6 +16,15 @@ io.on('connection', (socket) => {
   socket.on('disconnect', (socket) => {
     console.log('a user disconnect from Server');
   });
+  
+  socket.emit('newMessage', {
+    title: "welcome",
+    content: "You are an asshole"
+  })
+
+  socket.on('clientReply', (message)=>{
+    socket.emit('newMessage', message);
+  });
 });
 
 server.listen(port, ()=>{
