@@ -16,14 +16,22 @@ io.on('connection', (socket) => {
   socket.on('disconnect', (socket) => {
     console.log('a user disconnect from Server');
   });
-  
+
   socket.emit('newMessage', {
     title: "welcome",
     content: "You are an asshole"
   })
-
+  //emit the event only to the client that has emit the event
   socket.on('clientReply', (message)=>{
     socket.emit('newMessage', message);
+  });
+  //broadcast the event to all the client connected except the one emitting the event
+  socket.on('clientBroadcast', (message)=>{
+    socket.broadcast.emit('newMessage', message);
+  });
+  //emit the event to everybody connected
+  socket.on('toAllClient', (message)=>{
+    io.emit('newMessage', message);
   });
 });
 

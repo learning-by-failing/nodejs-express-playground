@@ -14,11 +14,4 @@ socket.on('newMessage', function (message) {
 
   let htmlContent = `${actualContent}<h2>${title}</h2>${messageContent}`;
   $('#content').html(htmlContent);
-
-  setTimeout(function(){
-    socket.emit('clientReply', {
-      title: "Motherfucker",
-      content: "this come from the client"
-    })
-  },5000);
 });
