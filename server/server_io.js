@@ -33,6 +33,12 @@ io.on('connection', (socket) => {
   socket.on('toAllClient', (message)=>{
     io.emit('newMessage', message);
   });
+
+  socket.on('messageFromClientWithAck', (message, callback)=>{
+    console.log(message.title);
+    console.log(message.content);
+    callback("Heavy metal");
+  });
 });
 
 server.listen(port, ()=>{

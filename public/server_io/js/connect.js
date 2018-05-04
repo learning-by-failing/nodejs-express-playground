@@ -15,3 +15,10 @@ socket.on('newMessage', function (message) {
   let htmlContent = `${actualContent}<h2>${title}</h2>${messageContent}`;
   $('#content').html(htmlContent);
 });
+
+//emit an event and get the acknoledge from the server
+setTimeout(function(){
+  socket.emit('messageFromClientWithAck', {title:"test ack", content: "Snowboard"}, function(ack){
+  $('#content').html(ack);
+  })
+}, 5000);
