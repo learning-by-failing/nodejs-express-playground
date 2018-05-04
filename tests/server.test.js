@@ -2,11 +2,13 @@ const request = require('supertest');
 const expect = require('expect');
 const {ObjectID} = require('mongodb');
 const {SHA256} = require('crypto-js');
+var bcrypt = require('bcryptjs');
 
 const app = require('./../server/server').app;
 const {Todo} = require('./../server/db/mongoose/models/Todo');
 const {User} = require('./../server/db/mongoose/models/User');
 const {todos,users,populateTodos,populateUsers} = require('./seeds/seeds');
+
 
 beforeEach(populateUsers);
 beforeEach(populateTodos);
@@ -59,7 +61,6 @@ describe('routes', ()=> {
 
         it('/api/todos/:id should return 404 if todo not found', (done) => {
           var hexId = new ObjectID().toHexString();
-
           request(app)
             .get(`/api/todo/${hexId}`)
             .expect(404)
@@ -125,27 +126,57 @@ describe('routes', ()=> {
       });
 
       it('/api/user', (done)=>{
-        request(app)
-          .post('/api/user')
-          .send({email: "mauri@ciao.it", password: "123456"})
-          .expect(201)
-          .expect((res)=>{
-            expect(res.body).toInclude({
-              email: "mauri@ciao.it"
+          request(app)
+            .post('/api/user')
+            .send({email: "mauri@myemail.com" , password: "password!"})
+            .expect(201)
+            .expect((res)=>{
+              expect(res.body).toInclude({
+                email: "mauri@myemail.com"
+              });
+              expect(res.header).toIncludeKey('x-auth').toNotBe(null);
+            }).end((err, res) => {
+              if(err){
+                return done(err);
+              }
+              User.findOne({email: "mauri@myemail.com"}).then((user)=>{
+                bcrypt.compare("password!", user.password, (err, res) => {
+                  expect(res).toBe(true);
+                });
+                done();
+              }).catch((e)=> done(e));
             });
-            expect(res.header).toIncludeKey('x-auth').toNotBe(null);
-          }).end((err, res) => {
+      });
+
+      it('/api/user/login with correct values', (done)=>{
+          request(app)
+            .post('/api/user/login')
+            .send({email: users[0].email , password: users[0].password})
+            .expect(200)
+            .expect((res)=>{
+              expect(res.body).toInclude({
+                email: users[0].email,
+                _id: users[0]._id
+              });
+              expect(res.header).toIncludeKey("x-auth").toNotBe(null);
+            }).end((err, res)=>{
+              if(err){
+                return done(err);
+              }
+              done();
+            });
+      });
+
+      it('/api/user/login with wrong values', (done)=>{
+        request(app)
+          .post('/api/user/login')
+          .send({email: 'aaaa@aaa.it' , password:'1234556'})
+          .expect(400)
+          .end((err, res)=>{
             if(err){
               return done(err);
             }
-            User.findOne({email: "mauri@ciao.it"}).then((user)=>{
-              expect(user.password).toBe(SHA256("123456").toString());
-              /*expect(user.tokens).toIncludeKey('token');
-              expect(user.tokens.token).toInclude({
-                access: "auth"
-              });*/
-              done();
-            }).catch((e)=> done(e));
+            done();
           });
       });
     });
