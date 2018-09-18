@@ -1,7 +1,7 @@
 const {ObjectID} = require('mongodb');
 
-const {Todo} = require('./../../server/db/mongoose/models/Todo');
-const {User} = require('./../../server/db/mongoose/models/User');
+const {Todo} = require('../../server/db/mongoose/models/Todo');
+const {User} = require('../../server/db/mongoose/models/User');
 
 const todos = [{
   _id: new ObjectID(),

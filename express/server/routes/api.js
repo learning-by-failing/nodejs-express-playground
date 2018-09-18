@@ -4,7 +4,7 @@ const _ = require('lodash');
 const {mongoose} = require('../db/mongoose/mongoose');
 const {Todo} = require('../db/mongoose/models/Todo');
 const {User} = require('../db/mongoose/models/User');
-const {authenticate} = require('./../authenticate/authenticate');
+const {authenticate} = require('../authenticate/authenticate');
 
 module.exports = (app)  => {
   app.get('/api', (req, res)=>{

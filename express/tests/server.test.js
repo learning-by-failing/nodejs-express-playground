@@ -4,9 +4,9 @@ const {ObjectID} = require('mongodb');
 const {SHA256} = require('crypto-js');
 var bcrypt = require('bcryptjs');
 
-const app = require('./../server/server').app;
-const {Todo} = require('./../server/db/mongoose/models/Todo');
-const {User} = require('./../server/db/mongoose/models/User');
+const app = require('../server/server').app;
+const {Todo} = require('../server/db/mongoose/models/Todo');
+const {User} = require('../server/db/mongoose/models/User');
 const {todos,users,populateTodos,populateUsers} = require('./seeds/seeds');
 
 

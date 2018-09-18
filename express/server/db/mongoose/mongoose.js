@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const mongoose = require('mongoose');
+const mongoose = require('express/server/db/mongoose/mongoose');
 const {Todo} = require('./models/Todo');
 
 //mongoose.Promise = global.Promise;

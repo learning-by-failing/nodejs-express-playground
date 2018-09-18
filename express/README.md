@@ -8,13 +8,5 @@ Inside the root directory exemples using:
 - MongoDb
 - Mongoose
 
-## nodejs
-nodejs exemples inside weatherApp directory using:
-- "axios": "^0.18.0",
-- "npm": "^5.8.0",
-- "request": "^2.85.0",
-- "yargs": "^11.1.0"
-- mocha - supertest - expect for testing
-
 ## TODO
 - add some exemples using **async** and **await** instead of Promise
